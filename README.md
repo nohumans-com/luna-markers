@@ -33,3 +33,7 @@ npm install          # needs the LUNA Builder SDK (see devDependencies in packag
 npm test
 npm run pack         # syncs markers-window/ and packs both Add Ons
 ```
+
+## License
+
+MIT, see [LICENSE](LICENSE).
