@@ -1,0 +1,126 @@
+/* LUNA skin v1: one stylesheet that makes an Add On look like LUNA.
+ * Flat dark panels, hairline borders, small-caps labels, square controls, steel-blue selection,
+ * amber accents, LUNA-style light waveform wells. Opt in with <html data-skin="luna">; without it
+ * nothing here applies, so an Add On keeps its own colourway. No external dependencies.
+ *
+ * Contract: it restyles these class names when an Add On has them (all optional):
+ *   .mast .mast-top .mast-sub h1 .chip .help-btn .swatch .segments(button[aria-pressed])
+ *   .pill (.primary .danger) .iconbtn .switch(i, aria-pressed) .sect .head h3 .fold .body
+ *   .row .tag .search input .menu .pop .sheet .toast .wave .play .clock .vol input[type=range]
+ * Tokens (override any on :root[data-skin="luna"] in the Add On to retune):
+ */
+:root[data-skin="luna"] {
+  --luna-bg: #1B1C1E;      --luna-panel: #26272A;  --luna-panel-hi: #2C2D30; --luna-well: #151618;
+  --luna-row: #25262A;     --luna-row-hi: #2D2E33; --luna-body: #1E1F22;
+  --luna-edge: #0D0E0F;    --luna-inset: #313236;  --luna-rule: #3A3B40;
+  --luna-fg: #E8E9EB;      --luna-fg-2: #8A8C93;
+  --luna-steel: #3B5169;   --luna-steel-edge: #5C7896; --luna-focus: #7FB0E6;
+  --luna-amber: #E9B23C;   --luna-red: #C0392E;
+  --luna-btn: #D3D5D9;     --luna-btn-hi: #E6E8EB; --luna-btn-ink: #0B0B0C;  /* action buttons: light gray, black text */
+  --luna-wave-bg: #DADCDF; --luna-wave-ink: #111214; --luna-wave-ph: #D9534F; /* audio as LUNA draws it */
+
+  /* Map onto the token names the Add On family already uses, so existing rules pick the look up. */
+  --chalk: var(--luna-panel); --fg: var(--luna-fg); --fg-2: var(--luna-fg-2); --line: #101112;
+  --well: #17181A; --card: var(--luna-panel); --card-hi: #2A2B2E; --rule: var(--luna-rule); --stroke: #4A4C52;
+  --solid: var(--luna-steel); --on-solid: #fff; --hit: var(--luna-focus); --on-hit: #000;
+  --panel-bg: var(--luna-panel); --toggle: var(--luna-amber); --on-toggle: #1B1B1B;
+  --ph: #F2B53A; --on-ph: #000; --red: var(--luna-red); --yellow: var(--luna-amber); --amber: var(--luna-amber);
+  --edge: var(--luna-edge); --inset: var(--luna-inset); --btn: #202124; --btn-edge: #50525A;
+  color-scheme: dark;
+}
+:root[data-skin="luna"] body { background: var(--luna-bg); color: var(--luna-fg); font-size: 14px; }
+
+/* Header: a title bar with the name centred */
+:root[data-skin="luna"] .mast { margin: 0; border-radius: 0; box-shadow: 0 1px 0 var(--luna-edge); background: linear-gradient(180deg, #2E2F33, var(--luna-panel)); }
+:root[data-skin="luna"] .mast-top { position: relative; padding: 9px 12px; border: 0; }
+:root[data-skin="luna"] .mast h1 { position: absolute; left: 50%; transform: translateX(-50%); font-size: 14px; font-weight: 700; letter-spacing: 0; }
+:root[data-skin="luna"] .mast-sub { background: #232427; border-top: 1px solid var(--luna-edge); padding: 8px 12px; }
+:root[data-skin="luna"] .chip { height: 26px; border-radius: 2px; background: #17181A; box-shadow: inset 0 0 0 1px var(--luna-inset); padding: 0 9px; font-size: 12.5px; }
+:root[data-skin="luna"] .chip .k { text-transform: uppercase; font-size: 10.5px; letter-spacing: 0.05em; font-weight: 600; }
+:root[data-skin="luna"] .help-btn { border-radius: 3px; background: var(--btn); box-shadow: inset 0 0 0 1px var(--btn-edge); }
+
+/* Theme picker: a circle with a circular (conic) gradient */
+:root[data-skin="luna"] .swatch { border-radius: 50%; border: 0; background: conic-gradient(from 200deg, #E9B23C, #E5694A, #B04FD0, #3B6FD9, #3FB6C8, #5FBF6A, #E9B23C); box-shadow: 0 0 0 1px rgba(255,255,255,0.18), inset 0 0 0 2px rgba(0,0,0,0.25); }
+:root[data-skin="luna"] .swatch:hover { box-shadow: 0 0 0 2px rgba(255,255,255,0.4), inset 0 0 0 2px rgba(0,0,0,0.25); }
+
+/* Segmented controls */
+:root[data-skin="luna"] .segments { gap: 1px; padding: 2px; border-radius: 2px; background: var(--luna-well); box-shadow: inset 0 0 0 1px var(--luna-inset); }
+:root[data-skin="luna"] .segments button { border-radius: 2px; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; color: var(--luna-fg-2); }
+:root[data-skin="luna"] .segments button[aria-pressed="true"] { background: var(--luna-steel); color: #fff; }
+
+/* Buttons: no stroke. Action buttons are light gray with black text. */
+:root[data-skin="luna"] .pill, :root[data-skin="luna"] .iconbtn { border-radius: 3px; background: var(--btn); box-shadow: none; color: var(--luna-fg); text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; }
+:root[data-skin="luna"] .iconbtn { text-transform: none; }
+:root[data-skin="luna"] .pill:hover, :root[data-skin="luna"] .iconbtn:hover { background: var(--luna-row-hi); }
+:root[data-skin="luna"] .pill.primary, :root[data-skin="luna"] .actions .pill, :root[data-skin="luna"] .sheet .pill { background: var(--luna-btn); color: var(--luna-btn-ink); font-weight: 700; }
+:root[data-skin="luna"] .pill.primary:hover:not(:disabled), :root[data-skin="luna"] .actions .pill:hover:not(:disabled), :root[data-skin="luna"] .sheet .pill:hover { background: var(--luna-btn-hi); color: #000; }
+:root[data-skin="luna"] .pill.primary:disabled, :root[data-skin="luna"] .actions .pill:disabled { background: #3A3B40; color: #7A7C83; }
+:root[data-skin="luna"] .pill.danger, :root[data-skin="luna"] .sheet .pill.danger { background: var(--luna-red); color: #fff; }
+:root[data-skin="luna"] .iconbtn.on { background: var(--luna-steel); color: #fff; }
+
+/* Toggle switch: rounded track, amber when on, white knob */
+:root[data-skin="luna"] .switch { text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; }
+:root[data-skin="luna"] .switch i { width: 38px; height: 20px; border-radius: 10px; background: #3A3B40; box-shadow: inset 0 1px 2px rgba(0,0,0,0.5); transition: background 140ms; }
+:root[data-skin="luna"] .switch i::after { top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #A4A6AD; box-shadow: 0 1px 2px rgba(0,0,0,0.5); transition: transform 140ms, background 140ms; }
+:root[data-skin="luna"] .switch[aria-pressed="true"] i { background: var(--toggle); box-shadow: inset 0 1px 2px rgba(0,0,0,0.25); }
+:root[data-skin="luna"] .switch[aria-pressed="true"] i::after { transform: translateX(18px); background: #fff; }
+
+/* Sections: dark small-caps title bars over flat bodies */
+:root[data-skin="luna"] .sect { gap: 0; }
+:root[data-skin="luna"] .head { padding: 0 12px; min-height: 30px; background: var(--luna-panel-hi); border-top: 1px solid var(--luna-edge); border-bottom: 1px solid var(--luna-edge); }
+:root[data-skin="luna"] h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.07em; font-weight: 700; }
+:root[data-skin="luna"] h3 small { color: var(--luna-amber); font-size: 12px; }
+:root[data-skin="luna"] .body, :root[data-skin="luna"][data-tone="dark"] .body { border-radius: 0; background: var(--luna-body); box-shadow: none; padding: 8px 10px 10px; }
+
+/* Sections stack flush (no gaps); title bars are one nowrap line, centred, with the action pinned right */
+:root[data-skin="luna"] .col, :root[data-skin="luna"] .sect { gap: 0 !important; row-gap: 0 !important; margin-top: 0; }
+:root[data-skin="luna"] .head { align-items: center; flex-wrap: nowrap; gap: 8px; }
+:root[data-skin="luna"] .head .fold { display: flex; align-items: center; gap: 8px; margin: 0; padding: 0; line-height: 1; flex: 0 0 auto; }
+:root[data-skin="luna"] .head .fold h3 { margin: 0; line-height: 1; }
+:root[data-skin="luna"] .head .fold::before { align-self: center; margin: 0; flex: none; }
+:root[data-skin="luna"] .head .fold-sum { flex: 1 1 0; min-width: 0; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:root[data-skin="luna"] .head .fold + *:not(.fold-sum), :root[data-skin="luna"] .head .fold-sum + * { margin-left: auto; }
+:root[data-skin="luna"] .head .pill, :root[data-skin="luna"] .head .switch { flex: none; margin-top: 0; margin-bottom: 0; align-self: center; }
+
+/* Rows and tags */
+:root[data-skin="luna"] .row { border-radius: 2px; background: var(--luna-row); box-shadow: inset 0 0 0 1px #2F3034; }
+:root[data-skin="luna"] .row:hover { background: var(--luna-row-hi); }
+:root[data-skin="luna"] .row[aria-selected="true"] { background: var(--luna-steel); box-shadow: inset 0 0 0 1px var(--luna-steel-edge); }
+:root[data-skin="luna"] .tag { border-radius: 2px; background: #35363B; color: #C9CACE; text-transform: uppercase; font-size: 9.5px; letter-spacing: 0.06em; }
+:root[data-skin="luna"] .tag.red, :root[data-skin="luna"] .tag.unused { background: #7D2626; box-shadow: inset 0 0 0 1px #C8473F; color: #fff; }
+
+/* Fields */
+:root[data-skin="luna"] input[type="text"], :root[data-skin="luna"] input[type="search"], :root[data-skin="luna"] input[type="number"], :root[data-skin="luna"] select, :root[data-skin="luna"] textarea { border-radius: 2px; background: var(--luna-well); box-shadow: inset 0 0 0 1px var(--luna-inset); color: var(--luna-fg); }
+:root[data-skin="luna"] .search input:focus, :root[data-skin="luna"] input:focus { box-shadow: inset 0 0 0 1px var(--luna-focus); }
+:root[data-skin="luna"] ::placeholder { text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; }
+:root[data-skin="luna"] .vol input::-webkit-slider-thumb, :root[data-skin="luna"] input[type="range"]::-webkit-slider-thumb { width: 10px; height: 16px; border-radius: 2px; background: #CFD0D3; box-shadow: none; }
+
+/* Transport bits */
+:root[data-skin="luna"] .play { height: 34px; border-radius: 3px; background: var(--luna-steel); color: #F2B53A; box-shadow: inset 0 0 0 1px var(--luna-steel-edge); }
+:root[data-skin="luna"] .clock { color: var(--luna-amber); }
+
+/* Audio the way LUNA draws it: light well, dark waveform, red playhead */
+:root[data-skin="luna"] .wave { border-radius: 2px; background: var(--luna-wave-bg); box-shadow: inset 0 0 0 1px var(--luna-edge); --fg: var(--luna-wave-ink); --ph: var(--luna-wave-ph); --on-ph: #fff; --hit: #2F6BFF; --on-hit: #fff; }
+:root[data-skin="luna"] .wave .msg { color: #4A4C52; }
+
+/* Floating things */
+:root[data-skin="luna"] .menu, :root[data-skin="luna"] .pop { background: #2A2B2E; color: var(--luna-fg); border-radius: 4px; box-shadow: 0 0 0 1px var(--luna-edge), 0 14px 30px rgba(0,0,0,0.5); }
+:root[data-skin="luna"] .menu button { border-radius: 2px; }
+:root[data-skin="luna"] .sheet { border-radius: 4px; background: #2A2B2E; }
+:root[data-skin="luna"] .sheet h4 { text-transform: uppercase; letter-spacing: 0.05em; font-size: 13px; }
+:root[data-skin="luna"] .toast { border-radius: 3px; }
+
+/* The guide (help popover) is a white sheet with black text: long reading needs contrast */
+:root[data-skin="luna"] .pop.help, :root[data-skin="luna"] .help { --fg: #111214; --fg-2: #55585F; --rule: #D5D7DB; --line: #D5D7DB; --well: #EEF0F2; --stroke: #B9BCC2; background: #FFFFFF; color: #111214; border-radius: 4px; box-shadow: 0 0 0 1px var(--luna-edge), 0 14px 30px rgba(0,0,0,0.5); }
+:root[data-skin="luna"] .pop.help *, :root[data-skin="luna"] .help * { color: inherit; border-color: #D5D7DB; }
+:root[data-skin="luna"] .pop.help > p, :root[data-skin="luna"] .pop.help .doc, :root[data-skin="luna"] .help > p, :root[data-skin="luna"] .help .doc { color: #55585F; }
+:root[data-skin="luna"] .pop.help kbd, :root[data-skin="luna"] .help kbd { background: #E4E6E9; color: #111214; box-shadow: inset 0 0 0 1px #C7CAD0; border-radius: 3px; }
+:root[data-skin="luna"] .pop.help svg, :root[data-skin="luna"] .help svg { color: inherit; }
+:root[data-skin="luna"] .pop.help .logo svg, :root[data-skin="luna"] .help img, :root[data-skin="luna"] .help .mascot { filter: none; }
+:root[data-skin="luna"] .pop.help details, :root[data-skin="luna"] .help details { border-color: #D5D7DB; }
+
+/* The Look switch an Add On adds to its colour popover (see luna-skin.js) */
+.looks { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; font-size: 13px; font-weight: 600; }
+.looks .segments { margin-left: auto; background: rgba(0,0,0,0.08); }
+.looks .segments button { padding: 4px 12px; }
+:root[data-skin="luna"] .looks .segments { background: var(--luna-well); }

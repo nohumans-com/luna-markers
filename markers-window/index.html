@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" data-skin="luna" data-tone="dark" data-panel="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Markers</title>
+  <link rel="stylesheet" href="luna-skin.css">
+  <style>
+    :root {
+      --chalk: #26272A; --fg: #E8E9EB; --fg-2: #8A8C93; --line: #101112; --well: #17181A;
+      --card: #26272A; --card-hi: #2A2B2E; --rule: #3A3B40; --stroke: #4A4C52;
+      --green: #34C759; --yellow: #E9B23C; --red: #C0392E;
+      --type: "Helvetica Neue", Helvetica, Arial, -apple-system, sans-serif;
+      color-scheme: dark;
+    }
+    /* One face everywhere: the marker name's (Helvetica Neue, 600). Numbers stay column-aligned via tabular figures. */
+    *, *::before, *::after { font-family: var(--type) !important; font-weight: 600 !important; font-style: normal !important; font-variant-numeric: tabular-nums; }
+    /* Window background: #191B1C (page, list and panel bodies). */
+    :root[data-skin="luna"] { --luna-bg: #191B1C; --luna-body: #191B1C; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; overscroll-behavior: none; }
+    body { margin: 0; display: flex; flex-direction: column; overflow: hidden; font: 14px/1.25 var(--type); -webkit-font-smoothing: antialiased; -webkit-user-select: none; user-select: none; }
+    input, textarea { -webkit-user-select: text; user-select: text; }
+    button, select, input, textarea { font: inherit; color: inherit; }
+    button { cursor: pointer; border: 0; background: none; padding: 0; }
+    button:disabled { opacity: 0.35; cursor: default; }
+    :focus-visible { outline: 2px solid var(--luna-focus, #7FB0E6); outline-offset: 1px; }
+    [hidden] { display: none !important; }
+
+    /* ---- Masthead (as MIDI Learn) ---- */
+    .mast { flex: none; display: flex; flex-direction: column; min-width: 0; position: relative; }
+    .mast-top { display: flex; align-items: center; gap: 10px; padding: 9px 12px; min-width: 0; }
+    .mast .logo { display: flex; flex: none; }
+    .mast .logo svg { flex: none; overflow: visible; color: var(--fg); width: 38px; height: 28px; }
+    .mast h1 { margin: 0; font-size: 14px; white-space: nowrap; }
+    /* Title sits left, right after the logo (the skin centres it absolutely by default). */
+    :root[data-skin="luna"] .mast h1 { position: static; left: auto; transform: none; }
+    .mast-top { gap: 14px; }
+    .mast .tools { margin-left: auto; display: flex; align-items: center; gap: 6px; flex: none; }
+    .mast-sub { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
+    .session { display: flex; align-items: center; gap: 7px; flex: 1 1 120px; min-width: 0; font-weight: 600; }
+    .session #status { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ldot { width: 8px; height: 8px; border-radius: 50%; background: #777; flex: none; transition: background 300ms, box-shadow 300ms; }
+    .ldot.ok { background: var(--green); box-shadow: 0 0 6px 0 rgba(52, 199, 89, 0.6); }
+    .ldot.wait { background: var(--yellow); }
+    .ldot.off { background: var(--red); }
+    .chip { display: inline-flex; align-items: center; gap: 6px; flex: none; }
+    .chip .k { color: var(--fg-2); }
+    .chip b { font-weight: 700; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .clock { font: 600 13px var(--type); letter-spacing: 0; }
+
+    /* ---- Buttons ---- */
+    .pill, .iconbtn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 26px; padding: 0 10px; white-space: nowrap; }
+    .iconbtn { width: 26px; padding: 0; }
+    .pill svg, .iconbtn svg { width: 14px; height: 14px; flex: none; }
+    .segments { display: inline-flex; }
+    .segments button { height: 22px; padding: 0 9px; }
+    .switch { display: inline-flex; align-items: center; gap: 7px; }
+    .switch i { position: relative; display: inline-block; flex: none; }
+    .switch i::after { content: ""; position: absolute; }
+
+    /* ---- Sections ---- */
+    main { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+    .sect { display: flex; flex-direction: column; min-height: 0; }
+    .sect.grow { flex: 1; }
+    .head { display: flex; align-items: center; }
+    .fold { display: flex; align-items: center; }
+    .fold h3 { margin: 0; }
+    .fold-sum { color: var(--fg-2); font-size: 12px; }
+    .body { min-height: 0; }
+    /* ◀ + MARKER ▶ as one joined control */
+    .cluster { display: inline-flex; gap: 1px; flex: none; }
+    :root[data-skin="luna"] .cluster > * { border-radius: 0; background: var(--luna-btn); color: var(--luna-btn-ink); }
+    :root[data-skin="luna"] .cluster > :first-child { border-radius: 3px 0 0 3px; }
+    :root[data-skin="luna"] .cluster > :last-child { border-radius: 0 3px 3px 0; }
+    :root[data-skin="luna"] .cluster > .iconbtn { width: 30px; }
+    .cluster svg { width: 12px; height: 12px; flex: none; display: block; }
+    .cluster .pill { gap: 6px; }
+    .cluster svg.plus { width: 8px; height: 8px; } /* as tall as the capital letters beside it (11px caps = 8px) */
+    :root[data-skin="luna"] .cluster > :hover:not(:disabled) { background: var(--luna-btn-hi); color: #000; }
+    :root[data-skin="luna"] .cluster > :disabled { background: #3A3B40; color: #7A7C83; opacity: 1; }
+    /* The X: a bare icon at the far right of the pinned header (no box). */
+    :root[data-skin="luna"] #insp-close { margin-left: auto; margin-right: -6px; flex: none; width: 30px; height: 30px; padding: 0; background: transparent; box-shadow: none; border-radius: 0; color: var(--fg-2); }
+    :root[data-skin="luna"] #insp-close:hover { background: transparent; color: var(--fg); }
+    #insp-close svg { width: 12px; height: 12px; display: block; }
+    .menu button .ck { display: inline-block; width: 18px; }
+    .tools-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .search { position: relative; flex: 1 1 110px; min-width: 90px; }
+    .search input { width: 100%; height: 26px; padding: 0 8px 0 28px; border: 0; }
+    .search .mag { position: absolute; left: 8px; top: 50%; width: 14px; height: 14px; margin-top: -7px; color: var(--fg-2); pointer-events: none; }
+    .search:focus-within .mag { color: var(--fg); }
+
+    /* ---- Marker list ---- */
+    .grid-head, .row { display: grid; grid-template-columns: 36px 20px minmax(0, 1fr) 118px 80px; align-items: center; column-gap: 6px; padding: 0 10px; }
+    .grid-head { height: 24px; flex: none; background: var(--luna-panel, #26272A); border-bottom: 1px solid var(--luna-edge, #0D0E0F); color: var(--fg-2); font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+    .grid-head .r, .row .r { text-align: right; }
+    .list { flex: 1; min-height: 0; overflow-y: auto; background: var(--luna-body, #1E1F22); outline: none; }
+    .row { height: 30px; margin: 0; position: relative; cursor: default; }
+    /* Rows butt up against each other, split by a single hairline (the skin's per-row box is switched off). */
+    :root[data-skin="luna"] .list .row { border-radius: 0; background: transparent; box-shadow: none; border-bottom: 1px solid #2E2F34; }
+    :root[data-skin="luna"] .list .row:hover { background: var(--luna-row-hi, #2D2E33); }
+    :root[data-skin="luna"] .list .row[aria-selected="true"] { background: var(--luna-steel, #3B5169); box-shadow: none; }
+    /* Counters (marker numbers, positions, lengths, the clock) get extra tracking and spaced separators. */
+    .row .num, .row .loc, .row .len, .clock, .row input.edit, .f input#f-loc { letter-spacing: 0.06em; }
+    .sep { display: inline-block; margin: 0 0.28em; color: var(--fg-2); }
+    .clock { padding: 0 2px; }
+    .row .num { color: var(--fg-2); font: 12px var(--type); }
+    .row .dot { width: 10px; height: 10px; border-radius: 2px; background: transparent; box-shadow: inset 0 0 0 1px #4A4C52; }
+    .row .dot.has { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.22); }
+    .row .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+    .row .nm small { color: var(--fg-2); font-weight: 400; margin-left: 8px; }
+    .row .loc, .row .len { font: 12.5px var(--type); }
+    .row .len { color: var(--fg-2); }
+    .row.current::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--luna-amber, #E9B23C); }
+    .row.current .num { color: var(--luna-amber, #E9B23C); }
+    .row.atplayhead .loc { color: var(--luna-amber, #E9B23C); }
+    .row input.edit { width: 100%; height: 22px; padding: 0 5px; border: 0; }
+    /* Scrollbar: drawn by the page, in its own gutter on the right, so it never depends on how the host's web
+       view draws (or hides) native scrollbars and never overlaps the rows. Present whenever the list overflows. */
+    .listwrap { flex: 1; min-height: 0; display: flex; background: var(--luna-body, #1E1F22); }
+    .list { scrollbar-width: none; }
+    .list::-webkit-scrollbar { display: none; width: 0; height: 0; }
+    .vbar { flex: none; width: 14px; position: relative; background: #151618; border-left: 1px solid #0D0E0F; touch-action: none; }
+    .vbar .thumb { position: absolute; left: 2px; right: 2px; top: 0; min-height: 44px; border-radius: 5px; background: #5A5C63; cursor: default; }
+    .vbar .thumb:hover { background: #7A7C83; }
+    .vbar.drag .thumb { background: var(--luna-focus, #7FB0E6); }
+    .sect.has-bar .grid-head { padding-right: 24px; }
+    .inspect .body::-webkit-scrollbar { width: 14px; }
+    .inspect .body::-webkit-scrollbar-track { background: #151618; border-left: 1px solid #0D0E0F; }
+    .inspect .body::-webkit-scrollbar-thumb { background: #5A5C63; border: 3px solid #151618; border-radius: 7px; min-height: 44px; }
+    /* Ghost row: a preview of the marker a click would add, only while hovering empty space off a marker. */
+    .list .ghost { visibility: hidden; pointer-events: none; color: var(--fg-2); }
+    .list.hover-empty:not(.on-marker) { cursor: pointer; }
+    :root[data-skin="luna"] .list.hover-empty:not(.on-marker) .ghost { visibility: visible; background: var(--luna-row-hi, #2D2E33); }
+    .list.hover-empty:not(.on-marker) .ghost .num, .list.hover-empty:not(.on-marker) .ghost .loc { color: var(--luna-amber, #E9B23C); }
+    .empty { padding: 28px 18px; text-align: center; color: var(--fg-2); line-height: 1.5; }
+    .empty b { display: block; color: var(--fg); font-size: 14px; margin-bottom: 4px; }
+    .empty kbd, .keys kbd { font: 11px var(--type); padding: 1px 5px; border-radius: 3px; background: #35363B; color: var(--fg); }
+
+    /* ---- Inspector ---- */
+    .inspect { flex: none; max-height: 48%; display: flex; flex-direction: column; overflow: hidden; }
+    .inspect .body { overflow-y: auto; min-height: 0; }
+    .inspect .body { display: grid; gap: 8px; padding: 10px 12px 12px; }
+    .f { display: grid; grid-template-columns: 74px minmax(0, 1fr); align-items: center; gap: 8px; }
+    .f > label, .f > .lab { color: var(--fg-2); font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+    .f input[type="text"], .f textarea { width: 100%; padding: 4px 8px; border: 0; min-height: 26px; }
+    .f textarea { resize: vertical; min-height: 44px; font: 13px/1.3 var(--type); }
+    .palette { display: grid; gap: 6px; }
+    .pal-h { color: var(--fg-2); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+    .sw[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--luna-focus, #7FB0E6); }
+    .swatches { display: flex; flex-wrap: wrap; gap: 5px; }
+    .sw.custom { display: inline-block; cursor: pointer; background: conic-gradient(#e5694a, #e9b23c, #5fbf6a, #3fb6c8, #3b6fd9, #b04fd0, #e5694a); overflow: hidden; }
+    .sw.custom input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; border: 0; padding: 0; }
+    .sw { width: 20px; height: 20px; border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.18); position: relative; }
+    .sw.none { background: repeating-linear-gradient(45deg, #2a2b2e 0 4px, #3a3b40 4px 8px); }
+    .sw[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--luna-focus, #7FB0E6); }
+    .btns { display: flex; flex-wrap: wrap; gap: 6px; }
+    .multi { color: var(--fg-2); font-size: 12.5px; padding: 2px 0; }
+    .nudge { display: flex; align-items: center; gap: 6px; }
+    .nudge select { height: 26px; padding: 0 6px; border: 0; }
+    select { color-scheme: dark; }
+
+    /* ---- Floating things ---- */
+    .menu { position: fixed; z-index: 20; min-width: 190px; padding: 4px; display: flex; flex-direction: column; }
+    .menu button { text-align: left; padding: 6px 10px; font-size: 13px; }
+    .menu button:hover { background: #3A3B40; }
+    .menu hr { border: 0; border-top: 1px solid #3A3B40; margin: 4px 0; width: 100%; }
+    .veil { position: fixed; inset: 0; z-index: 30; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; padding: 16px; }
+    .sheet { width: min(320px, 100%); padding: 16px; display: grid; gap: 10px; }
+    .sheet h4 { margin: 0; }
+    .sheet p { margin: 0; color: var(--fg-2); line-height: 1.4; }
+    .sheet .btns { justify-content: flex-end; }
+    .sheet textarea { width: 100%; min-height: 110px; padding: 6px 8px; border: 0; font: 12px var(--type); }
+    .toast { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 40; padding: 8px 14px; background: #3A3B40; color: var(--fg); box-shadow: 0 6px 18px rgba(0,0,0,0.5); max-width: calc(100% - 24px); }
+    .toast.err { background: #7D2626; }
+    .keys { padding: 8px 12px 10px; color: var(--fg-2); font-size: 12px; line-height: 1.9; display: none; }
+    .keys.show { display: block; }
+
+    @media (max-width: 330px) { .grid-head, .row { grid-template-columns: 30px 16px minmax(0, 1fr) 108px; } .grid-head .len, .row .len { display: none; } }
+    @media (max-height: 460px) { .inspect { max-height: 56%; } }
+  </style>
+</head>
+<body>
+  <header class="mast">
+    <div class="mast-top">
+      <span class="logo">
+        <svg class="ua" viewBox="0 0 69.86 51.37" fill="currentColor" role="img" aria-label="Universal Audio">
+          <path d="M1.23,26.55l33.29,19.3c.26.15.57.15.83,0l33.29-19.3c.54-.32.55-1.1.02-1.43L35.36,4.86c-.26-.16-.6-.16-.86,0L1.21,25.12c-.54.33-.53,1.11.02,1.43ZM41.88,17.04v9.38s.02.05.05.05h15.75l.09,1.11-15.84.76s-.05.02-.05.05v5.48s-.16,3.23,3.38,3.19c0,0-2.99.73-4.42-.52-1.09-.98-.98-2.84-.98-2.84v-5.21s-.03-.05-.06-.05l-5.55.27s-.05.02-.05.05v4.18c0,2.56-1.87,4.87-4.43,5.09-2.88.25-5.29-2.01-5.29-4.84v-14.26s.32-3.17-3.38-3.19c0,0,2.99-.73,4.42.52,1.08.97,1.02,2.84,1.02,2.84v.21l-.02,13.88c0,1.56,1.26,2.81,2.82,2.82,1.56,0,2.82-1.26,2.82-2.82v-4.32s-.02-.05-.05-.05l-2.56.12s-.07-.05-.04-.08l1.72-2.38h.93v-4.96s0-4.72,0-4.72c0-2.83,2.41-5.09,5.29-4.84,2.55.22,4.43,2.53,4.43,5.09Z"/>
+          <path d="M39.84,16.8c0-1.56-1.26-2.82-2.82-2.82-1.56,0-2.81,1.26-2.82,2.82v4.87s0,4.81,0,4.81h5.65v-9.68Z"/>
+        </svg>
+      </span>
+      <h1>Markers</h1>
+      <div class="tools">
+        <button class="iconbtn" id="open-keys" aria-label="Shortcuts" title="Keyboard shortcuts">?</button>
+      </div>
+    </div>
+    <div class="mast-sub">
+      <div class="session"><div id="status">Connecting</div><i class="ldot wait" id="link" title="Connecting to LUNA"></i></div>
+      <div class="chip" title="Playhead"><span class="clock" id="clock">1|1|000</span></div>
+    </div>
+  </header>
+  <div class="keys" id="keys">
+    <kbd>M</kbd> add at playhead &nbsp; <kbd>Enter</kbd> recall &nbsp; <kbd>&uarr;</kbd><kbd>&darr;</kbd> move &nbsp; <kbd>Shift</kbd>+click range &nbsp; <kbd>&#8984;/Ctrl</kbd>+click toggle<br>
+    <kbd>.</kbd> <kbd>1</kbd><kbd>2</kbd> <kbd>.</kbd> recall marker 12 &nbsp; <kbd>[</kbd> previous &nbsp; <kbd>]</kbd> next<br>
+    <kbd>Delete</kbd> remove &nbsp; <kbd>&#8984;/Ctrl</kbd>+<kbd>D</kbd> duplicate &nbsp; <kbd>&#8984;/Ctrl</kbd>+<kbd>A</kbd> select all &nbsp; double-click a name or position to edit
+  </div>
+
+  <main id="app" hidden>
+    <section class="sect" aria-label="Marker tools">
+      <div class="head">
+        <button class="fold" aria-expanded="true"><h3>Markers <small id="count"></small></h3></button>
+        <span class="fold-sum" id="sum"></span>
+        <div class="cluster" role="group" aria-label="Add a marker, previous and next marker">
+          <button class="iconbtn" id="prev" title="Previous marker ([)" aria-label="Previous marker"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M8.5 2.2v7.6L3 6z" fill="currentColor"/></svg></button>
+          <button class="pill primary" id="add" title="Add a marker at the playhead (M)" aria-label="Add marker"><svg class="plus" viewBox="0 0 8 8" aria-hidden="true"><path d="M4 1v6M1 4h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></svg>Marker</button>
+          <button class="iconbtn" id="next" title="Next marker (])" aria-label="Next marker"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 2.2v7.6L9 6z" fill="currentColor"/></svg></button>
+        </div>
+      </div>
+      <div class="body">
+        <div class="tools-row">
+          <div class="search"><svg class="mag" viewBox="0 0 16 16" aria-hidden="true"><circle cx="6.8" cy="6.8" r="4.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10.3 10.3L14 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><input type="search" id="q" aria-label="Filter markers" title="Filter markers by name, comment or number" autocomplete="off" spellcheck="false"></div>
+          <div class="segments" role="group" aria-label="Show positions as" id="seg-time">
+            <button data-v="bbt" aria-pressed="true" title="Bar | Beat | Tick">Bars</button>
+            <button data-v="time" aria-pressed="false" title="Minutes : Seconds">Time</button>
+          </div>
+          <div class="segments" role="group" aria-label="Sort by" id="seg-sort">
+            <button data-v="time" aria-pressed="true" title="Timeline order">Pos</button>
+            <button data-v="name" aria-pressed="false" title="Alphabetical">A&ndash;Z</button>
+          </div>
+          <button class="iconbtn" id="more" aria-haspopup="menu" aria-label="More" title="More: options, add at selection, renumber, select all, clear">&hellip;</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="sect grow" aria-label="Marker list">
+      <div class="grid-head"><span>#</span><span></span><span>Name</span><span class="r">Location</span><span class="r len">Length</span></div>
+      <div class="listwrap"><div class="list" id="list" tabindex="0" role="listbox" aria-multiselectable="true" aria-label="Markers"></div><div class="vbar" id="vbar" hidden aria-hidden="true"><div class="thumb" id="thumb"></div></div></div>
+    </section>
+
+    <section class="sect inspect" id="inspect" aria-label="Marker details" hidden>
+      <div class="head"><button class="fold"><h3 id="insp-title">Marker</h3></button><button class="iconbtn" id="insp-close" aria-label="Close marker details" title="Close (Esc)"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg></button></div>
+      <div class="body" id="insp-body"></div>
+    </section>
+  </main>
+
+  <p class="empty" id="empty">Connecting to LUNA&hellip;</p>
+
+  <script src="vendor/luna.global.js"></script>
+  <script src="logic.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

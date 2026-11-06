@@ -1,0 +1,17 @@
+{
+    "package_name": "Markers Window",
+    "id": "com.nohumans.markers.window",
+    "title": "Markers Window",
+    "version": "0.1.0",
+    "manufacturer": "No Humans",
+    "description": "Floating window version of Markers: a marker list for LUNA.",
+    "sdk_version": "3.1.1",
+    "min_luna_version": "3.1.1",
+    "engines": ["luna"],
+    "html": "index.html",
+    "target": "window",
+    "floating": true,
+    "show_with_session": true,
+    "width": 520,
+    "height": 640
+}

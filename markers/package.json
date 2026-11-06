@@ -1,0 +1,21 @@
+{
+  "name": "markers",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Markers, a LUNA Add On built with @uaudio/luna-builder-sdk",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "serve": "ua-builder serve",
+    "install-addon": "ua-builder install",
+    "build": "node scripts/sync-window.mjs",
+    "pack": "node scripts/sync-window.mjs && ua-builder pack --no-vendor",
+    "vendor": "node scripts/vendor-sdk.mjs"
+  },
+  "devDependencies": {
+    "@uaudio/luna-builder-sdk": "file:../../../Library/Application Support/LUNA Builder SDK/plugins/ua-luna-builder",
+    "vite": "8.3.0",
+    "vitest": "5.0.1"
+  }
+}

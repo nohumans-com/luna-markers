@@ -1,0 +1,13 @@
+{
+    "package_name": "Markers",
+    "id": "com.nohumans.markers",
+    "title": "Markers",
+    "version": "0.1.0",
+    "manufacturer": "No Humans",
+    "description": "A marker list for LUNA: add, name, color, recall and organize timeline markers.",
+    "sdk_version": "3.1.1",
+    "min_luna_version": "3.1.1",
+    "engines": ["luna"],
+    "html": "index.html",
+    "target": "browser"
+}
